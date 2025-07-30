@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class AsteroidHit : MonoBehaviour
 {
     [SerializeField] private GameObject asteroidExplosion;
     [SerializeField] private GameController gameController;
+    [SerializeField] private GameObject popupCanvas;
+
 
     private void Awake()
     {
@@ -16,14 +19,27 @@ public class AsteroidHit : MonoBehaviour
     {
         Instantiate(asteroidExplosion, transform.position, transform.rotation);
 
-        //calculate score for hitting this asteroid.
-        float distanceFromPlayer = Vector3.Distance(transform.position, Vector3.zero);
-        int bonusPoints = (int)distanceFromPlayer;
+        if(GameController.currentGameStatus == GameController.GameState.Playing)
+        {
+            //calculate score for hitting this asteroid.
+            float distanceFromPlayer = Vector3.Distance(transform.position, Vector3.zero);
+            int bonusPoints = (int)distanceFromPlayer;
 
-        int asteroidScore = 10 * bonusPoints;
+            int asteroidScore = 10 * bonusPoints;
 
-        //pass score to GameController
-        gameController.UpdatePlayerScore(asteroidScore);
+            //Set our text for the popup - then instantiate popup
+            popupCanvas.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = asteroidScore.ToString();
+
+            GameObject asteroidPopup = Instantiate(popupCanvas, transform.position, Quaternion.identity);
+
+            //Adjust scale of popup
+            asteroidPopup.transform.localScale = new Vector3(transform.localScale.x * (distanceFromPlayer / 10),
+                                                             transform.localScale.y * (distanceFromPlayer / 10),
+                                                             transform.localScale.z * (distanceFromPlayer / 10));
+
+            //pass score to GameController
+            gameController.UpdatePlayerScore(asteroidScore);
+        }
 
         Destroy(this.gameObject);
     }

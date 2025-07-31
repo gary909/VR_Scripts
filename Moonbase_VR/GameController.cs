@@ -21,6 +21,10 @@ public class GameController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI highScoreText;
     private int highScore;
 
+    [Header("Gameplay Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] gameplayAudio;
+
     private int playerScore;
 
     public enum GameState
@@ -73,6 +77,8 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         currentGameStatus = GameState.Playing;
+        audioSource.clip = gameplayAudio[1];
+        audioSource.Play();
     }
 
     private void GameOver()
@@ -88,6 +94,11 @@ public class GameController : MonoBehaviour
             PlayerPrefs.SetInt("HighScore", playerScore);
             highScoreText.text = playerScore.ToString();
         }
+
+        //change audio
+        audioSource.clip = gameplayAudio[2];
+        audioSource.Play();
+        audioSource.loop = false;
     }
 
     public void ResetGame()
@@ -101,5 +112,10 @@ public class GameController : MonoBehaviour
         //reset the score
         playerScore = 0;
         scoreText.text = "0";
+
+        //play intro music
+        audioSource.clip = gameplayAudio[0];
+        audioSource.Play();
+        audioSource.loop = true;
     }
 }

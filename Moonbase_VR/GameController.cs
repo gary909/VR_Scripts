@@ -77,8 +77,7 @@ public class GameController : MonoBehaviour
     public void StartGame()
     {
         currentGameStatus = GameState.Playing;
-        audioSource.clip = gameplayAudio[1];
-        audioSource.Play();
+        PlayGameAudio(gameplayAudio[1], true);
     }
 
     private void GameOver()
@@ -96,9 +95,7 @@ public class GameController : MonoBehaviour
         }
 
         //change audio
-        audioSource.clip = gameplayAudio[2];
-        audioSource.Play();
-        audioSource.loop = false;
+        PlayGameAudio(gameplayAudio[2], false);
     }
 
     public void ResetGame()
@@ -114,8 +111,13 @@ public class GameController : MonoBehaviour
         scoreText.text = "0";
 
         //play intro music
-        audioSource.clip = gameplayAudio[0];
+        PlayGameAudio(gameplayAudio[0], true);
+    }
+
+    private void PlayGameAudio(AudioClip clipToPlay, bool shouldLoop)
+    {
+        audioSource.clip = clipToPlay;
+        audioSource.loop = shouldLoop;
         audioSource.Play();
-        audioSource.loop = true;
     }
 }
